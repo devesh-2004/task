@@ -1,9 +1,5 @@
-// Runs db/migration.sql against DATABASE_URL.
-// Usage: npm run seed
-//
-// This is just a convenience wrapper so you don't need psql installed; the
-// migration.sql file is the source of truth and is equally runnable by hand.
-
+// This is just a convenience wrapper so need psql installed; 
+// the migration.sql file is equally runnable by hand.
 import "dotenv/config";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -15,8 +11,6 @@ async function main() {
     throw new Error("DATABASE_URL is not set. Copy .env.example to .env first.");
   }
 
-  // One-off bulk script: keep the pool tiny and disable prepared statements
-  // (Supabase's transaction pooler does not support them).
   const sql = postgres(url, { max: 1, prepare: false });
 
   const file = join(process.cwd(), "db", "migration.sql");

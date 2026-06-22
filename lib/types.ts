@@ -1,10 +1,10 @@
 export type Product = {
-  id: string; // BIGINT as string
+  id: string; 
   name: string;
   category: string;
-  price: string; // NUMERIC as string to preserve exact value
-  created_at: string; // ISO timestamp
-  updated_at: string; // ISO timestamp
+  price: string; 
+  created_at: string; 
+  updated_at: string;
 };
 
 export type ProductsResponse = {

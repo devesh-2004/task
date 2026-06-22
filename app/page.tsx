@@ -7,23 +7,20 @@ import { CATEGORIES } from "@/lib/types";
 const PAGE_SIZE = 20;
 
 export default function Home() {
-  const [category, setCategory] = useState<string>(""); // "" = all
+  const [category, setCategory] = useState<string>(""); 
   const [products, setProducts] = useState<Product[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [inserting, setInserting] = useState(false);
-
-  // A token that increments whenever the filter resets, so an in-flight request
-  // from a previous filter can't append stale rows to the new list.
+ 
   const requestId = useRef(0);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const loadPage = useCallback(
     async (opts: { reset?: boolean }) => {
       if (loading) return;
-      // For non-reset (append) loads, stop if there's nothing more.
       if (!opts.reset && !hasMore) return;
 
       const myRequestId = opts.reset ? ++requestId.current : requestId.current;
@@ -44,7 +41,6 @@ export default function Home() {
         }
         const data: ProductsResponse = await res.json();
 
-        // Ignore responses from a superseded filter.
         if (myRequestId !== requestId.current) return;
 
         setProducts((prev) =>
@@ -63,16 +59,13 @@ export default function Home() {
     [category, cursor, hasMore, loading]
   );
 
-  // Reset and load whenever the category filter changes.
   useEffect(() => {
     setProducts([]);
     setCursor(null);
     setHasMore(true);
     loadPage({ reset: true });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category]);
 
-  // Infinite scroll: load the next page when the sentinel enters the viewport.
   useEffect(() => {
     const node = sentinelRef.current;
     if (!node) return;
@@ -98,9 +91,6 @@ export default function Home() {
         body: JSON.stringify({ count: 5 }),
       });
       if (!res.ok) throw new Error(`Insert failed (${res.status})`);
-      // We intentionally do NOT refetch — the point of the demo is that you can
-      // keep scrolling and the new rows never appear mid-list or cause dupes.
-      // Reload from the top to see them appear at the top.
     } catch (err) {
       setError((err as Error).message);
     } finally {

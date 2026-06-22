@@ -1,12 +1,6 @@
-// Opaque base64 cursor encoding {created_at, id}.
-//
-// The cursor is the (created_at, id) of the LAST row of the page just returned.
-// The next page asks for rows strictly "after" it in (created_at DESC, id DESC)
-// order — that is what makes pagination keyset-based and insert-safe.
-
 export type Cursor = {
-  created_at: string; // ISO timestamp
-  id: string; // BIGINT serialized as string to avoid JS number precision loss
+  created_at: string; 
+  id: string; 
 };
 
 export function encodeCursor(cursor: Cursor): string {
@@ -14,7 +8,6 @@ export function encodeCursor(cursor: Cursor): string {
   return Buffer.from(json, "utf8").toString("base64url");
 }
 
-// Throws on malformed input so the API layer can map it to a 400.
 export function decodeCursor(raw: string): Cursor {
   let parsed: unknown;
   try {
@@ -35,7 +28,6 @@ export function decodeCursor(raw: string): Cursor {
 
   const { created_at, id } = parsed as Cursor;
 
-  // Validate the parts so a tampered cursor can't reach SQL as garbage.
   if (Number.isNaN(Date.parse(created_at))) {
     throw new Error("Cursor created_at is not a valid timestamp");
   }
