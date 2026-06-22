@@ -187,4 +187,3 @@ lib/
 db/migration.sql                    # schema + 200k seed + indexes
 scripts/seed.ts                     # runs migration.sql (npm run seed)
 ```
-# task
